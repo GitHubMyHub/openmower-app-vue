@@ -3,7 +3,8 @@ import { mergeConfig, defineConfig, configDefaults } from 'vitest/config'
 import viteConfig from './vite.config'
 
 export default mergeConfig(
-  viteConfig,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  viteConfig as any,
   defineConfig({
     test: {
       environment: 'jsdom',

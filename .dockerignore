@@ -1,0 +1,8 @@
+Dockerfile
+.dockerignore
+.git*
+.env*
+*.log
+node_modules
+dist
+README.md

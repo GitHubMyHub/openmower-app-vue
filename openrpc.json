@@ -1,0 +1,62 @@
+{
+  "$schema": "https://github.com/open-rpc/meta-schema/releases/latest/download/open-rpc-meta-schema.json",
+  "openrpc": "1.3.2",
+  "info": {
+    "version": "1.0.0",
+    "title": "OpenMower"
+  },
+  "methods": [
+    {
+      "name": "rpc.ping",
+      "summary": "Ping the server.",
+      "params": [],
+      "result": {
+        "name": "result",
+        "description": "Returns \"pong\" if successful.",
+        "schema": { "type": "string", "enum": ["pong"] }
+      }
+    },
+    {
+      "name": "rpc.methods",
+      "summary": "List all available methods.",
+      "params": [],
+      "result": {
+        "name": "methods",
+        "description": "An array of method names.",
+        "schema": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    {
+      "name": "map.replace",
+      "summary": "Replace the current map with a new one.",
+      "params": [
+        { "name": "map", "required": true, "schema": { "type": "object" } }
+      ],
+      "result": { "name": "result", "schema": { "type": "null" } }
+    },
+    {
+      "name": "meta.rpc.ping",
+      "summary": "Ping the meta server.",
+      "params": [],
+      "result": { "name": "result", "schema": { "type": "string", "enum": ["pong"] } }
+    },
+    {
+      "name": "meta.config.schema",
+      "summary": "Get the configuration schema.",
+      "params": [],
+      "result": { "name": "result", "schema": { "type": "string" } }
+    },
+    {
+      "name": "meta.config.defaults",
+      "summary": "Get the default configuration values.",
+      "params": [],
+      "result": {
+        "name": "result",
+        "schema": {
+          "type": "object",
+          "additionalProperties": { "type": "string" }
+        }
+      }
+    }
+  ]
+}

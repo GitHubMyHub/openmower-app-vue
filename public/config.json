@@ -1,0 +1,11 @@
+{
+  "mowers": [
+    {
+      "id": "1",
+      "name": "OpenMower",
+      "description": "",
+      "mqtt_ws_url": "ws://localhost:9001",
+      "mqtt_prefix": ""
+    }
+  ]
+}

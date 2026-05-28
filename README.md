@@ -1,73 +1,65 @@
-# openmower-app-vue
+# OpenMower App — Vue 3
 
-This template should help get you started developing with Vue 3 in Vite.
+A Vue 3 / Vuetify 4 / Pinia rewrite of the original Next.js
+[openmower-app](https://github.com/GitHubMyHub/openmower-app).
 
-## Recommended IDE Setup
+This project mirrors the original application 1:1 in structure and feature set:
 
-[VS Code](https://code.visualstudio.com/) + [Vue (Official)](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+| Area | Original (Next.js)            | This port (Vue)                                  |
+| ---- | ----------------------------- | ------------------------------------------------ |
+| UI   | MUI v7 + Emotion              | Vuetify 4 + SCSS                                 |
+| State| Zustand + Immer + React ctx   | Pinia + Immer                                    |
+| Map  | maplibre-react-components     | maplibre-gl (direct)                             |
+| RPC  | mqtt + custom JSON-RPC client | identical (`src/lib/rpc.ts`, framework-agnostic) |
+| Routing | Next.js App Router         | vue-router 5                                     |
 
-## Recommended Browser Setup
+## Project layout
 
-- Chromium-based browsers (Chrome, Edge, Brave, etc.):
-  - [Vue.js devtools](https://chromewebstore.google.com/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd)
-  - [Turn on Custom Object Formatter in Chrome DevTools](http://bit.ly/object-formatters)
-- Firefox:
-  - [Vue.js devtools](https://addons.mozilla.org/en-US/firefox/addon/vue-js-devtools/)
-  - [Turn on Custom Object Formatter in Firefox DevTools](https://fxdx.dev/firefox-devtools-custom-object-formatters/)
-
-## Type Support for `.vue` Imports in TS
-
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) to make the TypeScript language service aware of `.vue` types.
-
-## Customize configuration
-
-See [Vite Configuration Reference](https://vite.dev/config/).
-
-## Project Setup
-
-```sh
-bun install
+```
+src/
+  App.vue            v-app shell, OS-theme sync, config bootstrap
+  main.ts            createApp + plugins
+  plugins/           Vuetify + Pinia + Router registration
+  router/            vue-router config (mirrors original app routes)
+  layouts/           default.vue, map.vue
+  views/             DashboardView, MapView, TasksView, SensorsView,
+                     SettingsView, DebugView
+  components/
+    navigation/      Sidebar + MobileBottomBar
+    page/            Page / PageHeader / PageContent / HeaderStat shell
+    map/             MowerMap, markers, mapStyles
+  stores/            Pinia stores (config, mowers, map) + zod schemas
+  lib/               rpc-base, generated rpc client, actions, cardStyles
+  composables/       useTeleop
+  utils/             coordinates, area-utils, area-converter, map-issues
+  types/             AppConfig / MowerConfig / NavigationItem / GeoJSON
+  assets/styles/     main.scss + Vuetify settings.scss
 ```
 
-### Compile and Hot-Reload for Development
+## Configuration
 
-```sh
-bun dev
+At runtime the app fetches `/config.json` (kept in `public/config.json`).
+Alternatively define these Vite env variables to build with a single mower
+preconfigured:
+
+- `VITE_MOWER_NAME`
+- `VITE_MOWER_MQTT_WS_URL` (defaults to `ws://<host>:9001`)
+- `VITE_MOWER_MQTT_PREFIX`
+
+## Scripts
+
+```
+npm run dev        # Vite dev server on http://localhost:3000
+npm run build      # type-check + production build into dist/
+npm run preview    # serve the built bundle
+npm run lint       # oxlint + eslint --fix
 ```
 
-### Type-Check, Compile and Minify for Production
+## Docker
 
-```sh
-bun run build
+```
+docker build -t openmower-app .
+docker run -p 3000:3000 openmower-app
 ```
 
-### Run Unit Tests with [Vitest](https://vitest.dev/)
-
-```sh
-bun test:unit
-```
-
-### Run End-to-End Tests with [Playwright](https://playwright.dev)
-
-```sh
-# Install browsers for the first run
-npx playwright install
-
-# When testing on CI, must build the project first
-bun run build
-
-# Runs the end-to-end tests
-bun test:e2e
-# Runs the tests only on Chromium
-bun test:e2e --project=chromium
-# Runs the tests of a specific file
-bun test:e2e tests/example.spec.ts
-# Runs the tests in debug mode
-bun test:e2e --debug
-```
-
-### Lint with [ESLint](https://eslint.org/)
-
-```sh
-bun lint
-```
+The image builds the static bundle and serves it via nginx on port 3000.
